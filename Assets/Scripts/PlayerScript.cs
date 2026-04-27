@@ -1,0 +1,169 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.InputSystem;
+
+public class PlayerScript : MonoBehaviour
+{
+    [Header("References")]
+    [SerializeField] private Rigidbody rb;
+    [SerializeField] private Transform cameraPivot;
+    [SerializeField] private Transform cameraPos;
+
+    [Header("Movement Settings")]
+    [SerializeField] private float moveSpeed = 3f;
+    [SerializeField] private float rotationSpeed = 6f;
+
+    [Header("Camera Settings")]
+    [SerializeField] private float lookSensitivity = 0.1f;
+    [SerializeField] private float cameraPitchMin = -30f;
+    [SerializeField] private float cameraPitchMax = 60f;
+
+    [Header("State")]
+    [SerializeField] private PlayerTraversalState currentState = PlayerTraversalState.Idle;
+
+    [Header("Input Readout")]
+    [SerializeField] private Vector2 moveInput;
+    [SerializeField] private Vector2 lookInput;
+
+    [Header("Camera Readout")]
+    [SerializeField] private float yaw;
+    [SerializeField] private float pitch;
+
+    [Header("Respawn Campfire")]
+    [SerializeField] private Transform LastCampfirePos;
+
+    private void Awake()
+    {
+        if (rb == null)
+        {
+            rb = GetComponent<Rigidbody>();
+        }
+
+        if (rb != null)
+        {
+            rb.freezeRotation = true;
+        }
+        if (cameraPivot != null)
+        {
+            yaw = cameraPivot.eulerAngles.y;
+        }
+        else
+        {
+            yaw = transform.eulerAngles.y;
+        }
+    }
+
+    private void Update()
+    {
+        UpdateState();
+        HandleCameraRotation();
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            transform.position = new Vector3(LastCampfirePos.position.x + 1, LastCampfirePos.position.y, LastCampfirePos.position.z + 1);
+            Debug.Log(LastCampfirePos.position);
+        }
+    }
+
+    private void FixedUpdate()
+    {
+        HandleMovement();
+        
+    }
+
+    private void UpdateState()
+    {
+        if (moveInput.sqrMagnitude > 0.01f)
+        {
+            currentState = PlayerTraversalState.Walk;
+        }
+        else
+        {
+            currentState = PlayerTraversalState.Idle;
+        }
+    }
+
+    private void HandleMovement()
+    {
+        if (rb == null)
+        {
+            Debug.LogError("RigidBody not found");
+            return;
+        }
+
+        Vector3 moveDirection = GetCameraRelativeMoveDirection();
+
+        Vector3 targetVelocity = moveDirection * moveSpeed;
+
+        targetVelocity.y = rb.velocity.y;
+
+        rb.velocity = targetVelocity;
+
+        if (currentState == PlayerTraversalState.Walk && moveDirection.sqrMagnitude > 0.01f)
+        {
+            transform.forward = Vector3.Lerp(transform.forward, moveDirection, rotationSpeed * Time.fixedDeltaTime);
+        }
+    }
+
+    private Vector3 GetCameraRelativeMoveDirection()
+    {
+        if (cameraPos == null)
+        {
+            return new Vector3(moveInput.x, 0f, moveInput.y).normalized;
+        }
+
+        Vector3 cameraForward = cameraPos.forward;
+        Vector3 cameraRight = cameraPos.right;
+
+        cameraForward.y = 0f;
+        cameraRight.y = 0f;
+
+        cameraForward.Normalize();
+        cameraRight.Normalize();
+
+        Vector3 moveDirection = (cameraForward * moveInput.y) + (cameraRight * moveInput.x);
+
+        if (moveDirection.sqrMagnitude > 1f)
+        {
+            moveDirection.Normalize();
+        }
+
+        return moveDirection;
+    }
+
+    private void HandleCameraRotation()
+    {
+        if (cameraPivot == null) return;
+
+        yaw += lookInput.x * lookSensitivity;
+        pitch -= lookInput.y * lookSensitivity;
+
+        pitch = Mathf.Clamp(pitch, cameraPitchMin, cameraPitchMax);
+
+        cameraPivot.rotation = Quaternion.Euler(pitch, yaw, 0f);
+
+        if (cameraPos != null)
+        {
+            cameraPos.localRotation = Quaternion.identity;
+        }
+    }
+
+    public void OnMove(InputValue value)
+    {
+        moveInput = value.Get<Vector2>();
+    }
+
+    public void OnLook(InputValue value)
+    {
+        lookInput = value.Get<Vector2>();
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.tag == "Campfire")
+        {
+            LastCampfirePos = other.gameObject.transform;
+            Debug.Log("Campfire last visited is" + LastCampfirePos.position);          
+        }
+    }
+}
