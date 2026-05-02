@@ -26,12 +26,20 @@ public class PlayerScript : MonoBehaviour
     [SerializeField] private Vector2 moveInput;
     [SerializeField] private Vector2 lookInput;
 
+    [Header("Player Health")]
+    [SerializeField] private float maxHealth = 20f;
+    [SerializeField] private float currentHealth;
+
+
     [Header("Camera Readout")]
     [SerializeField] private float yaw;
     [SerializeField] private float pitch;
 
-    [Header("Respawn Campfire")]
+    [Header("Respawn")]
     [SerializeField] private Transform LastCampfirePos;
+    [SerializeField] private bool isPlayerDead;
+    
+    
 
     private void Awake()
     {
@@ -52,6 +60,8 @@ public class PlayerScript : MonoBehaviour
         {
             yaw = transform.eulerAngles.y;
         }
+
+        currentHealth = maxHealth;
     }
 
     private void Update()
@@ -156,6 +166,26 @@ public class PlayerScript : MonoBehaviour
     public void OnLook(InputValue value)
     {
         lookInput = value.Get<Vector2>();
+    }
+
+    private void Death()
+    {
+        if (currentHealth <= 0)
+        {
+            isPlayerDead = true;
+            StartCoroutine("DeathTime");
+            isPlayerDead = false;
+        }
+
+    }
+
+    private IEnumerator DeathTime()
+    {
+        Debug.Log("You Have Died!");
+        //You have died splash screen TM@
+        yield return new WaitForSeconds(5f);
+        transform.position = LastCampfirePos.position;
+        currentHealth = maxHealth;
     }
 
     private void OnTriggerEnter(Collider other)
