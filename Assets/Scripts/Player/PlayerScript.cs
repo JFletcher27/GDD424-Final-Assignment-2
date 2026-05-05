@@ -78,7 +78,7 @@ public class PlayerScript : MonoBehaviour
     private void FixedUpdate()
     {
         HandleMovement();
-        
+        Death();
     }
 
     private void UpdateState()
