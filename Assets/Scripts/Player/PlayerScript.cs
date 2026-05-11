@@ -15,7 +15,7 @@ public class PlayerScript : MonoBehaviour
     [SerializeField] private float rotationSpeed = 6f;
 
     [Header("Camera Settings")]
-    [SerializeField] private float lookSensitivity = 0.1f;
+    [SerializeField] private float lookSensitivity = 1.5f;
     [SerializeField] private float cameraPitchMin = -30f;
     [SerializeField] private float cameraPitchMax = 60f;
 

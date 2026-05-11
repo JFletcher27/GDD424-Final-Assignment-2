@@ -513,7 +513,7 @@ MonoBehaviour:
   cameraPos: {fileID: 963194228}
   moveSpeed: 5
   rotationSpeed: 10
-  lookSensitivity: 0.1
+  lookSensitivity: 0.3
   cameraPitchMin: -30
   cameraPitchMax: 60
   currentState: 0
@@ -1321,6 +1321,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: -90
       objectReference: {fileID: 0}
+    - target: {fileID: 8341509489345789572, guid: 825202d4ded7d9c44b4ec43ef635cd2f, type: 3}
+      propertyPath: bullet
+      value: 
+      objectReference: {fileID: 8498963713910852913, guid: 7296e7033a0c3c04f985d61333cc27cf, type: 3}
     - target: {fileID: 8341509489345789572, guid: 825202d4ded7d9c44b4ec43ef635cd2f, type: 3}
       propertyPath: playerScript
       value: 
