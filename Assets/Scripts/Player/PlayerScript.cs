@@ -25,6 +25,7 @@ public class PlayerScript : MonoBehaviour
     [Header("Input Readout")]
     [SerializeField] private Vector2 moveInput;
     [SerializeField] private Vector2 lookInput;
+    [SerializeField] public bool FireShot;
 
     [Header("Player Health")]
     [SerializeField] private float maxHealth = 20f;
@@ -43,6 +44,11 @@ public class PlayerScript : MonoBehaviour
 
     private void Awake()
     {
+        if (currentHealth != maxHealth)
+        {
+            currentHealth = maxHealth;
+        }
+
         if (rb == null)
         {
             rb = GetComponent<Rigidbody>();
@@ -60,24 +66,28 @@ public class PlayerScript : MonoBehaviour
         {
             yaw = transform.eulerAngles.y;
         }
-
-        currentHealth = maxHealth;
     }
 
     private void Update()
     {
-        UpdateState();
-        HandleCameraRotation();
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (isPlayerDead!= true)
         {
-            transform.position = new Vector3(LastCampfirePos.position.x + 1, LastCampfirePos.position.y, LastCampfirePos.position.z + 1);
-            Debug.Log(LastCampfirePos.position);
+            UpdateState();
+            HandleCameraRotation();
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                transform.position = new Vector3(LastCampfirePos.position.x + 1, LastCampfirePos.position.y, LastCampfirePos.position.z + 1);
+                Debug.Log(LastCampfirePos.position);
+            }
         }
     }
 
     private void FixedUpdate()
     {
-        HandleMovement();
+        if (isPlayerDead != true)
+        {
+            HandleMovement();
+        }
         Death();
     }
 
@@ -168,13 +178,21 @@ public class PlayerScript : MonoBehaviour
         lookInput = value.Get<Vector2>();
     }
 
+    public void OnShoot(InputValue value)
+    {
+        if (value.isPressed && isPlayerDead != true)
+        {
+            FireShot = true;
+        }
+    }
+
     private void Death()
     {
         if (currentHealth <= 0)
         {
             isPlayerDead = true;
             StartCoroutine("DeathTime");
-            isPlayerDead = false;
+            currentHealth = maxHealth;
         }
 
     }
@@ -183,9 +201,9 @@ public class PlayerScript : MonoBehaviour
     {
         Debug.Log("You Have Died!");
         //You have died splash screen TM@
-        yield return new WaitForSeconds(5f);
+        yield return new WaitForSeconds(5);
         transform.position = LastCampfirePos.position;
-        currentHealth = maxHealth;
+        isPlayerDead = false;
     }
 
     private void OnTriggerEnter(Collider other)

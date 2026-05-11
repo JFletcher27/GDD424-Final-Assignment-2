@@ -7,6 +7,8 @@ public class GunScript : MonoBehaviour
 {
     [SerializeField] GameObject bullet;
     [SerializeField] Transform BulletFirePoint;
+
+    [SerializeField] PlayerScript playerScript;
     // Start is called before the first frame update
     void Start()
     {
@@ -16,17 +18,14 @@ public class GunScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Mouse0))
+        if (playerScript.FireShot)
         {
-            OnShoot();
+            GameObject lastShot = Instantiate(bullet);
+            lastShot.transform.parent = null;
+            lastShot.transform.position = BulletFirePoint.position;
+            lastShot = null;
+            playerScript.FireShot = false;
         }
     }
 
-    private void OnShoot()
-    {
-        GameObject lastShot = Instantiate(bullet);
-        lastShot.transform.parent = null;
-        lastShot.transform.position = BulletFirePoint.position;
-        lastShot = null;
-    }
 }
