@@ -9,6 +9,7 @@ public class PlayerScript : MonoBehaviour
     [SerializeField] private Rigidbody rb;
     [SerializeField] private Transform cameraPivot;
     [SerializeField] private Transform cameraPos;
+    [SerializeField] private GameLogic gameLogic;
 
     [Header("Movement Settings")]
     [SerializeField] private float moveSpeed = 3f;
@@ -25,20 +26,23 @@ public class PlayerScript : MonoBehaviour
     [Header("Input Readout")]
     [SerializeField] private Vector2 moveInput;
     [SerializeField] private Vector2 lookInput;
-    [SerializeField] public bool FireShot;
+    public bool FireShot;
 
-    [Header("Player Health")]
+    [Header("Player Attributes")]
     [SerializeField] private float maxHealth = 20f;
     [SerializeField] private float currentHealth;
+    public float playerLevel = 1;
+    public float experiencePoints;
 
 
     [Header("Camera Readout")]
     [SerializeField] private float yaw;
     [SerializeField] private float pitch;
 
-    [Header("Respawn")]
+    [Header("Respawn & Reload")]
     [SerializeField] private Transform LastCampfirePos;
     [SerializeField] private bool isPlayerDead;
+    public bool isPlayerReloading;
     
     
 
@@ -180,7 +184,7 @@ public class PlayerScript : MonoBehaviour
 
     public void OnShoot(InputValue value)
     {
-        if (value.isPressed && isPlayerDead != true)
+        if (value.isPressed && isPlayerDead != true && isPlayerReloading != true)
         {
             FireShot = true;
         }
@@ -191,7 +195,7 @@ public class PlayerScript : MonoBehaviour
         if (currentHealth <= 0)
         {
             isPlayerDead = true;
-            StartCoroutine("DeathTime");
+            StartCoroutine(DeathTime());
             currentHealth = maxHealth;
         }
 
@@ -208,10 +212,15 @@ public class PlayerScript : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.tag == "Campfire")
+        if (other.gameObject.CompareTag("Campfire"))
         {
             LastCampfirePos = other.gameObject.transform;
             Debug.Log("Campfire last visited is" + LastCampfirePos.position);          
+        }
+
+        if (other.gameObject.CompareTag("PlayerBullet"))
+        {
+            currentHealth -= gameLogic.bulletDamage;
         }
     }
 }
