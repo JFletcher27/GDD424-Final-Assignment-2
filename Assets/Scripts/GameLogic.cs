@@ -6,5 +6,4 @@ public class GameLogic : MonoBehaviour
 {
     [Header("Global Attributes")]
     public float bulletDamage = 1f;
-
 }

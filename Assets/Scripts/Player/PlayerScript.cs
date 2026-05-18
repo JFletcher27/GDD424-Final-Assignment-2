@@ -29,7 +29,7 @@ public class PlayerScript : MonoBehaviour
     public bool FireShot;
 
     [Header("Player Attributes")]
-    [SerializeField] private float maxHealth = 20f;
+    [SerializeField] private float maxHealth = 10f;
     [SerializeField] private float currentHealth;
     public float playerLevel = 1;
     public float experiencePoints;
@@ -218,7 +218,7 @@ public class PlayerScript : MonoBehaviour
             Debug.Log("Campfire last visited is" + LastCampfirePos.position);          
         }
 
-        if (other.gameObject.CompareTag("PlayerBullet"))
+        if (other.gameObject.CompareTag("Bullet"))
         {
             currentHealth -= gameLogic.bulletDamage;
         }

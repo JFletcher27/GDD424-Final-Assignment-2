@@ -5,8 +5,13 @@ TagManager:
   serializedVersion: 2
   tags:
   - Campfire
-  - PlayerBullet
-  - EnemyBullet
+  - Bullet
+  - A1
+  - A2
+  - A3
+  - SmallEnemy
+  - LargeEnemy
+  - Boss
   layers:
   - Default
   - TransparentFX

@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: -376729007059921671}
   m_Layer: 0
   m_Name: EnemyBullet
-  m_TagString: EnemyBullet
+  m_TagString: Bullet
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -149,4 +149,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rb: {fileID: 0}
+  rifle: {fileID: 0}
   bulletSpeed: 10

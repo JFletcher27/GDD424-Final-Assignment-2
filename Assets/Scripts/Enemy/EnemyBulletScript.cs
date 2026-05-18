@@ -6,6 +6,7 @@ public class EnemyBulletScript : MonoBehaviour
 {
     [Header("Reference")]
     [SerializeField] Rigidbody rb;
+    [SerializeField] public Transform rifle;
 
     [Header("Bullet Attributes")]
     [SerializeField] float bulletSpeed = 10f;
@@ -13,9 +14,9 @@ public class EnemyBulletScript : MonoBehaviour
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
-        Vector3 dir = transform.localPosition;
+        Vector3 dir = transform.parent.forward;
         rb.AddForce(dir * bulletSpeed, ForceMode.Impulse);
-
+        transform.parent = null;
     }
 
     // Update is called once per frame
@@ -26,7 +27,7 @@ public class EnemyBulletScript : MonoBehaviour
 
     private IEnumerator DeleteTime()
     {
-        yield return new WaitForSeconds(3);
+        yield return new WaitForSeconds(2);
         Destroy(gameObject);
     }
 }

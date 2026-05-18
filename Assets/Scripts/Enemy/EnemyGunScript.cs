@@ -7,14 +7,16 @@ public class EnemyGunScript : MonoBehaviour
     [Header("Reference")]
     [SerializeField] GameObject bullet;
     [SerializeField] Transform BulletFirePoint;
-    [SerializeField] private float timer = 2f;
+    [SerializeField] Enemy enemyScript;
     [SerializeField] private float firingTime;
+    
     
 
 
     private void Awake()
     {
-        
+        enemyScript = GetComponentInParent<Enemy>();
+
     }
 
     void Update()
@@ -26,7 +28,7 @@ public class EnemyGunScript : MonoBehaviour
     private void ShotCooldown()
     {
         firingTime += Time.deltaTime;
-        if (firingTime > timer)
+        if (firingTime > enemyScript.shotSpeed)
         {
             Shoot();
             firingTime = 0f;
@@ -34,8 +36,7 @@ public class EnemyGunScript : MonoBehaviour
     }
     private void Shoot()
     {
-        GameObject lastShot = Instantiate(bullet);
+        GameObject lastShot = Instantiate(bullet, BulletFirePoint);
         lastShot.transform.position = BulletFirePoint.position;
-        lastShot = null;
     }
 }
