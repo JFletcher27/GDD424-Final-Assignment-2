@@ -1,17 +1,12 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class EnemyGunScript : MonoBehaviour
 {
     [Header("Reference")]
     [SerializeField] GameObject bullet;
-    [SerializeField] Transform BulletFirePoint;
+    [SerializeField] Transform bulletFirePoint;
     [SerializeField] Enemy enemyScript;
     [SerializeField] private float firingTime;
-    
-    
-
 
     private void Awake()
     {
@@ -34,9 +29,10 @@ public class EnemyGunScript : MonoBehaviour
             firingTime = 0f;
         }
     }
+
     private void Shoot()
     {
-        GameObject lastShot = Instantiate(bullet, BulletFirePoint);
-        lastShot.transform.position = BulletFirePoint.position;
+        GameObject lastShot = Instantiate(bullet, bulletFirePoint);
+        lastShot.transform.position = bulletFirePoint.position;
     }
 }

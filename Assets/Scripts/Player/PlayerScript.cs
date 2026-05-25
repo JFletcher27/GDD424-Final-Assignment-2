@@ -10,6 +10,7 @@ public class PlayerScript : MonoBehaviour
     [SerializeField] private Transform cameraPivot;
     [SerializeField] private Transform cameraPos;
     [SerializeField] private GameLogic gameLogic;
+    [SerializeField] private GameObject deathScreen;
 
     [Header("Movement Settings")]
     [SerializeField] private float moveSpeed = 3f;
@@ -204,8 +205,9 @@ public class PlayerScript : MonoBehaviour
     private IEnumerator DeathTime()
     {
         Debug.Log("You Have Died!");
-        //You have died splash screen TM@
+        deathScreen.SetActive(true);
         yield return new WaitForSeconds(5);
+        deathScreen.SetActive(false);
         transform.position = LastCampfirePos.position;
         isPlayerDead = false;
     }
