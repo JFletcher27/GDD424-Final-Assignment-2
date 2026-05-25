@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
@@ -48,8 +47,8 @@ public class Enemy : MonoBehaviour
         agent.speed = speed;
 
         currentHp = maxHp;
-        
-        foreach(GameObject obj in GameObject.FindGameObjectsWithTag(arena))
+
+        foreach (GameObject obj in GameObject.FindGameObjectsWithTag(arena))
         {
             pathfinding.Add(obj.transform);
         }
@@ -59,7 +58,7 @@ public class Enemy : MonoBehaviour
 
     void Update()
     {
-        if (Vector3.Distance(transform.position, pathfinding[path].position) < 2f) 
+        if (Vector3.Distance(transform.position, pathfinding[path].position) < 2f)
         {
 
             Debug.Log("Work");
@@ -89,6 +88,6 @@ public class Enemy : MonoBehaviour
         {
             currentHp -= gameLogic.bulletDamage;
         }
-        
+
     }
 }

@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -11,6 +10,7 @@ public class PlayerScript : MonoBehaviour
     [SerializeField] private Transform cameraPos;
     [SerializeField] private GameLogic gameLogic;
     [SerializeField] private GameObject deathScreen;
+    [SerializeField] private GameObject controlGuide;
 
     [Header("Movement Settings")]
     [SerializeField] private float moveSpeed = 3f;
@@ -44,8 +44,8 @@ public class PlayerScript : MonoBehaviour
     [SerializeField] private Transform LastCampfirePos;
     [SerializeField] private bool isPlayerDead;
     public bool isPlayerReloading;
-    
-    
+
+
 
     private void Awake()
     {
@@ -75,14 +75,15 @@ public class PlayerScript : MonoBehaviour
 
     private void Update()
     {
-        if (isPlayerDead!= true)
+        if (isPlayerDead != true)
         {
             UpdateState();
             HandleCameraRotation();
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                transform.position = new Vector3(LastCampfirePos.position.x + 1, LastCampfirePos.position.y, LastCampfirePos.position.z + 1);
+                transform.position = new Vector3(LastCampfirePos.position.x, LastCampfirePos.position.y, LastCampfirePos.position.z);
                 Debug.Log(LastCampfirePos.position);
+                currentHealth = maxHealth;
             }
         }
     }
@@ -94,6 +95,7 @@ public class PlayerScript : MonoBehaviour
             HandleMovement();
         }
         Death();
+        UI();
     }
 
     private void UpdateState()
@@ -173,6 +175,12 @@ public class PlayerScript : MonoBehaviour
         }
     }
 
+    private void UI()
+    {
+        deathScreen.SetActive(isPlayerDead);
+        controlGuide.SetActive(!isPlayerDead);
+    }
+
     public void OnMove(InputValue value)
     {
         moveInput = value.Get<Vector2>();
@@ -205,10 +213,11 @@ public class PlayerScript : MonoBehaviour
     private IEnumerator DeathTime()
     {
         Debug.Log("You Have Died!");
-        deathScreen.SetActive(true);
         yield return new WaitForSeconds(5);
-        deathScreen.SetActive(false);
-        transform.position = LastCampfirePos.position;
+        if (LastCampfirePos != null)
+        {
+            transform.position = LastCampfirePos.position;
+        }
         isPlayerDead = false;
     }
 
@@ -217,7 +226,7 @@ public class PlayerScript : MonoBehaviour
         if (other.gameObject.CompareTag("Campfire"))
         {
             LastCampfirePos = other.gameObject.transform;
-            Debug.Log("Campfire last visited is" + LastCampfirePos.position);          
+            Debug.Log("Campfire last visited is" + LastCampfirePos.position);
         }
 
         if (other.gameObject.CompareTag("Bullet"))
