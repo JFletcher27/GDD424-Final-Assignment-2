@@ -18,6 +18,7 @@ public class DoorScript : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
+        //when the player is close enough to the door, play the open door animation
         float dist = Vector3.Distance(playerTransform.position, transform.position);
 
         if (doorAnimator != null)

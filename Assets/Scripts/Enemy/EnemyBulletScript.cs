@@ -12,6 +12,7 @@ public class EnemyBulletScript : MonoBehaviour
 
     private void Awake()
     {
+        //finds the bullets rigidbody, and propels it forward in the direction the gun is facing
         rb = GetComponent<Rigidbody>();
         Vector3 dir = transform.parent.forward;
         rb.AddForce(dir * bulletSpeed, ForceMode.Impulse);
@@ -26,6 +27,7 @@ public class EnemyBulletScript : MonoBehaviour
 
     private IEnumerator DeleteTime()
     {
+        //Destroys itself after 2 seconds
         yield return new WaitForSeconds(2);
         Destroy(gameObject);
     }

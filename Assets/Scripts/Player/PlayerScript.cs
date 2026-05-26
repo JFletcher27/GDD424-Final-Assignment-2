@@ -34,7 +34,7 @@ public class PlayerScript : MonoBehaviour
     [SerializeField] private float currentHealth;
     public float playerLevel = 1;
     public float experiencePoints;
-
+    //leveling and XP currently unused but in place for a later point
 
     [Header("Camera Readout")]
     [SerializeField] private float yaw;
@@ -79,12 +79,6 @@ public class PlayerScript : MonoBehaviour
         {
             UpdateState();
             HandleCameraRotation();
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                transform.position = new Vector3(LastCampfirePos.position.x, LastCampfirePos.position.y, LastCampfirePos.position.z);
-                Debug.Log(LastCampfirePos.position);
-                currentHealth = maxHealth;
-            }
         }
     }
 
@@ -117,7 +111,7 @@ public class PlayerScript : MonoBehaviour
             Debug.LogError("RigidBody not found");
             return;
         }
-
+        //gets the direction of the camera, and uses that for realitive movement
         Vector3 moveDirection = GetCameraRelativeMoveDirection();
 
         Vector3 targetVelocity = moveDirection * moveSpeed;
@@ -160,6 +154,7 @@ public class PlayerScript : MonoBehaviour
 
     private void HandleCameraRotation()
     {
+        //Makes sure the camera cannot rotate too far and flip upside down
         if (cameraPivot == null) return;
 
         yaw += lookInput.x * lookSensitivity;
@@ -177,6 +172,7 @@ public class PlayerScript : MonoBehaviour
 
     private void UI()
     {
+        //shows control guide if player is alive, and death screen if player is dead
         deathScreen.SetActive(isPlayerDead);
         controlGuide.SetActive(!isPlayerDead);
     }
@@ -198,6 +194,18 @@ public class PlayerScript : MonoBehaviour
             FireShot = true;
         }
     }
+    
+    public void OnRespawn(InputValue value)
+    {
+        //respawns player back to the last campfire they visited, and resets theirs and the enemies health
+        if (value.isPressed && isPlayerDead != true)
+        {
+            transform.position = new Vector3(LastCampfirePos.position.x, LastCampfirePos.position.y + 1, LastCampfirePos.position.z);
+            Debug.Log(LastCampfirePos.position);
+            gameLogic.EnemyRespawn();
+            currentHealth = maxHealth;
+        }
+    }
 
     private void Death()
     {
@@ -212,17 +220,19 @@ public class PlayerScript : MonoBehaviour
 
     private IEnumerator DeathTime()
     {
-        Debug.Log("You Have Died!");
+        //if the player dies, wait for 5 seconds then respawn them at their last campfire visited
         yield return new WaitForSeconds(5);
         if (LastCampfirePos != null)
         {
             transform.position = LastCampfirePos.position;
         }
+        gameLogic.EnemyRespawn();
         isPlayerDead = false;
     }
 
     private void OnTriggerEnter(Collider other)
     {
+        //holds all the triggers for colliders
         if (other.gameObject.CompareTag("Campfire"))
         {
             LastCampfirePos = other.gameObject.transform;

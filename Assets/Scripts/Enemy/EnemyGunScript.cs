@@ -11,7 +11,6 @@ public class EnemyGunScript : MonoBehaviour
     private void Awake()
     {
         enemyScript = GetComponentInParent<Enemy>();
-
     }
 
     void Update()
@@ -19,9 +18,9 @@ public class EnemyGunScript : MonoBehaviour
         ShotCooldown();
     }
 
-
     private void ShotCooldown()
     {
+        //enemies have a set shot speed, gun counts up and when it reaches the shot speed value, it fires and resets the firing timer
         firingTime += Time.deltaTime;
         if (firingTime > enemyScript.shotSpeed)
         {
@@ -32,6 +31,7 @@ public class EnemyGunScript : MonoBehaviour
 
     private void Shoot()
     {
+        //instantiates the bullet
         GameObject lastShot = Instantiate(bullet, bulletFirePoint);
         lastShot.transform.position = bulletFirePoint.position;
     }

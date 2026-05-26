@@ -17,12 +17,13 @@ public class Enemy : MonoBehaviour
     [Header("AI Settings")]
     [SerializeField] float speed;
     [SerializeField] string arena;
-    private List<Transform> pathfinding = new();
+    private readonly List<Transform> pathfinding = new();
     private int path;
 
 
     private void Awake()
     {
+        //Gets the enemies stats
         if (gameObject.CompareTag("SmallEnemy"))
         {
             maxHp = 10f;
@@ -47,7 +48,7 @@ public class Enemy : MonoBehaviour
         agent.speed = speed;
 
         currentHp = maxHp;
-
+        //adds each tile of the arenas to the navmesh
         foreach (GameObject obj in GameObject.FindGameObjectsWithTag(arena))
         {
             pathfinding.Add(obj.transform);
@@ -58,18 +59,18 @@ public class Enemy : MonoBehaviour
 
     void Update()
     {
+        //if enemy is too close to the pathfinding point, find a new one
         if (Vector3.Distance(transform.position, pathfinding[path].position) < 2f)
         {
-
-            Debug.Log("Work");
             Navigation();
         }
 
         Death();
     }
 
-    private void Navigation()
+    public void Navigation()
     {
+        //find random spot in the arena the enemy is in and move towards it
         path = Random.Range(0, pathfinding.Count);
         agent.SetDestination(pathfinding[path].position);
     }
@@ -78,7 +79,7 @@ public class Enemy : MonoBehaviour
     {
         if (currentHp <= 0f)
         {
-            Destroy(gameObject);
+            gameObject.SetActive(false);
         }
     }
 
@@ -89,5 +90,10 @@ public class Enemy : MonoBehaviour
             currentHp -= gameLogic.bulletDamage;
         }
 
+    }
+
+    public void Respawn()
+    {
+        currentHp = maxHp;
     }
 }

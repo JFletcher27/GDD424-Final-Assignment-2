@@ -1,7 +1,5 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class GunScript : MonoBehaviour
 {
@@ -38,12 +36,12 @@ public class GunScript : MonoBehaviour
 
     private void Shoot()
     {
+        //Fires the gun when the button for shoot is pressed and removes the parent
         if (playerScript.FireShot)
         {
             GameObject lastShot = Instantiate(bullet);
             lastShot.transform.parent = null;
             lastShot.transform.position = BulletFirePoint.position;
-            lastShot = null;
             playerScript.FireShot = false;
             ammoCount -= 1;
         }
@@ -51,6 +49,7 @@ public class GunScript : MonoBehaviour
 
     private void Reload()
     {
+        //reloads automatically when ammo reaches 0
         if (ammoCount == 0)
         {
             StartCoroutine(ReloadTime());
@@ -59,6 +58,7 @@ public class GunScript : MonoBehaviour
 
     private IEnumerator ReloadTime()
     {
+        //Reloads the gun and plays an animation and audio file
         gunAnimator.Play("Reload");
         audioSource.Play();
         playerScript.isPlayerReloading = true;

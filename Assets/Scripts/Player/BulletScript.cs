@@ -10,13 +10,11 @@ public class BulletScript : MonoBehaviour
     [Header("Bullet Attributes")]
     [SerializeField] float bulletSpeed = 10f;
 
-    // Start is called before the first frame update
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
         Vector3 dir = Camera.main.transform.forward; 
         rb.AddForce(dir * bulletSpeed,ForceMode.Impulse);
-        
     }
 
     // Update is called once per frame
